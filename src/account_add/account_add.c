@@ -269,7 +269,10 @@ int main( int argc, char * argv[] )
 				}
 			}
 			if (!pw_ok)
-				printf ("There's already an account by that name on the server.\n");
+			{
+				printf("There's already an account by that name on the server.\n");
+				exit(0);
+			}
 #else
 			sprintf (&myQuery[0], "SELECT * from account_data WHERE username='%s'", inputstr );
 			// Check to see if that account already exists.
@@ -300,7 +303,10 @@ int main( int argc, char * argv[] )
 #endif
 		}
 		else
-			printf ("Desired account name length should be 16 characters or less.\n");
+		{
+			printf("Desired account name length should be 16 characters or less.\n");
+			exit(0);
+		}
 	}
 	memcpy (&username[0], &__argv[1][0], strlen (__argv[1])+1);
 	// Gunna use this to salt it up
@@ -325,7 +331,10 @@ int main( int argc, char * argv[] )
 				printf ("The input passwords did not match.\n");
 		}
 		else
-			printf ("Desired password length should be 16 characters or less.\n");
+		{
+			printf("Desired password length should be 16 characters or less.\n");
+			exit(0);
+		}
 	}
 	pw_ok = 0;
 	while (!pw_ok)
@@ -346,10 +355,13 @@ int main( int argc, char * argv[] )
 			if (!pw_ok)
 			{
 				printf ("That e-mail address is already in use.\n");
+				exit(0);
 				num_rows = 1;
 			}
 			else
+			{
 				num_rows = 0;
+			}
 #else
 		sprintf (&myQuery[0], "SELECT * from account_data WHERE email='%s'", email );
 		//printf ("Executing MySQL query: %s\n", myQuery );
