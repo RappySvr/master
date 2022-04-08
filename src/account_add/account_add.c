@@ -137,8 +137,7 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned
 **
 ********************************************************/
 
-int
-main( int argc, char * argv[] )
+int main( int argc, char * argv[] )
 {
 	char inputstr[255] = {0};
 	char username[17];
@@ -151,6 +150,7 @@ main( int argc, char * argv[] )
 	time_t regtime;
 	unsigned reg_seconds;
 	unsigned char max_fields;
+
 
 #ifndef NO_SQL
 	MYSQL * myData;
@@ -255,15 +255,14 @@ main( int argc, char * argv[] )
 	pw_ok = 0;
 	while (!pw_ok)
 	{
-		printf ("New account's username: ");
-		scanf ("%s", inputstr );
-		if (strlen(inputstr) < 17)
+		printf ("New account's username: %s\n", __argv[1]);
+		if (strlen(__argv[1]) < 17)
 		{
 #ifdef NO_SQL
 			pw_ok = 1;
 			for (ds=0;ds<num_accounts;ds++)
 			{
-				if (!strcmp(&inputstr[0],&account_data[ds]->username[0]))
+				if (!strcmp(&__argv[1][0],&account_data[ds]->username[0]))
 				{
 					pw_ok = 0;
 					break;
@@ -303,20 +302,17 @@ main( int argc, char * argv[] )
 		else
 			printf ("Desired account name length should be 16 characters or less.\n");
 	}
-	memcpy (&username[0], &inputstr[0], strlen (inputstr)+1);
+	memcpy (&username[0], &__argv[1][0], strlen (__argv[1])+1);
 	// Gunna use this to salt it up
 	regtime = time(NULL);
 	pw_ok = 0;
 	while (!pw_ok)
 	{
-		printf ("New account's password: ");
-		scanf ("%s", inputstr );
-		if ( ( strlen (inputstr ) < 17 ) || ( strlen (inputstr) < 8 ) )
+		printf ("New account's password added!\n");
+		if ( ( strlen (__argv[2]) < 17 ) || ( strlen (__argv[2]) < 8 ) )
 		{
-			memcpy (&password[0], &inputstr[0], 17 );
-			printf ("Verify password: ");
-			scanf ("%s", inputstr );
-			memcpy (&password_check[0], &inputstr[0], 17 );
+			memcpy (&password[0], &__argv[2][0], 17 );
+			memcpy (&password_check[0], &__argv[2][0], 17 );
 			pw_same = 1;
 			for (ch=0;ch<16;ch++)
 			{
@@ -334,9 +330,8 @@ main( int argc, char * argv[] )
 	pw_ok = 0;
 	while (!pw_ok)
 	{
-		printf ("New account's e-mail address: ");
-		scanf ("%s", inputstr );
-		memcpy (&email[0], &inputstr[0], strlen (inputstr)+1 );
+		printf ("New account's e-mail address: %s\n", __argv[3]);
+		memcpy (&email[0], &__argv[3][0], strlen (__argv[3])+1 );
 		// Check to see if the e-mail address has already been registered to an account.
 #ifdef NO_SQL
 			pw_ok = 1;
@@ -374,9 +369,7 @@ main( int argc, char * argv[] )
 #endif
 		if (!num_rows)
 		{
-			printf ("Verify e-mail address: ");
-			scanf ("%s", inputstr );
-			memcpy (&email_check[0], &inputstr[0], strlen (inputstr)+1 );
+			memcpy (&email_check[0], &__argv[3][0], strlen (__argv[3])+1 );
 			pw_same = 1;
 			for (ch=0;ch<strlen(email);ch++)
 			{
@@ -466,7 +459,8 @@ main( int argc, char * argv[] )
 	// Insert into table.
 	//printf ("Executing MySQL query: %s\n", myQuery );
 #ifdef NO_SQL
-	printf ("Account added.");
+	printf ("Account added.\n");
+	printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
 #else
 	if ( ! mysql_query ( myData, &myQuery[0] ) )
 		printf ("Account successfully added to the database!");
