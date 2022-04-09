@@ -108,7 +108,6 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned
 	FILE* fp;
 	unsigned ch;
 
-	printf ("Loading \"%s\" ... ", filename);
 	fp = fopen (filename, "rb");
 	if (fp)
 	{
@@ -127,7 +126,6 @@ void LoadDataFile ( const char* filename, unsigned* count, void** data, unsigned
 		}
 		fclose (fp);
 	}
-	printf ("done!\n");
 }
 
 
@@ -249,13 +247,9 @@ int main( int argc, char * argv[] )
 		LoadDataFile ("account.dat", &num_accounts, &account_data[0], sizeof(L_ACCOUNT_DATA));
 #endif
 
-
-	printf ("Tethealla Server Account Addition\n");
-	printf ("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
 	pw_ok = 0;
 	while (!pw_ok)
 	{
-		printf ("New account's username: %s\n", __argv[1]);
 		if (strlen(__argv[1]) < 17)
 		{
 #ifdef NO_SQL
@@ -271,7 +265,7 @@ int main( int argc, char * argv[] )
 			if (!pw_ok)
 			{
 				printf("There's already an account by that name on the server.\n");
-				exit(0);
+				return 1;
 			}
 #else
 			sprintf (&myQuery[0], "SELECT * from account_data WHERE username='%s'", inputstr );
@@ -305,7 +299,7 @@ int main( int argc, char * argv[] )
 		else
 		{
 			printf("Desired account name length should be 16 characters or less.\n");
-			exit(0);
+			return 1;
 		}
 	}
 	memcpy (&username[0], &__argv[1][0], strlen (__argv[1])+1);
@@ -314,7 +308,7 @@ int main( int argc, char * argv[] )
 	pw_ok = 0;
 	while (!pw_ok)
 	{
-		printf ("New account's password added!\n");
+		//printf ("New account's password added!\n");
 		if ( ( strlen (__argv[2]) < 17 ) || ( strlen (__argv[2]) < 8 ) )
 		{
 			memcpy (&password[0], &__argv[2][0], 17 );
@@ -333,13 +327,13 @@ int main( int argc, char * argv[] )
 		else
 		{
 			printf("Desired password length should be 16 characters or less.\n");
-			exit(0);
+			return 1;
 		}
 	}
 	pw_ok = 0;
 	while (!pw_ok)
 	{
-		printf ("New account's e-mail address: %s\n", __argv[3]);
+		//printf ("New account's e-mail address: %s\n", __argv[3]);
 		memcpy (&email[0], &__argv[3][0], strlen (__argv[3])+1 );
 		// Check to see if the e-mail address has already been registered to an account.
 #ifdef NO_SQL
@@ -355,7 +349,7 @@ int main( int argc, char * argv[] )
 			if (!pw_ok)
 			{
 				printf ("That e-mail address is already in use.\n");
-				exit(0);
+				return 1;
 				num_rows = 1;
 			}
 			else
@@ -471,8 +465,8 @@ int main( int argc, char * argv[] )
 	// Insert into table.
 	//printf ("Executing MySQL query: %s\n", myQuery );
 #ifdef NO_SQL
-	printf ("Account added.\n");
-	printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
+	//printf ("Account added.\n");
+	//printf("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n");
 #else
 	if ( ! mysql_query ( myData, &myQuery[0] ) )
 		printf ("Account successfully added to the database!");
